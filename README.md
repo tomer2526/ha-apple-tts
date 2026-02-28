@@ -112,18 +112,6 @@ Then add integration:
 - Enter Mac host and port (default `5002`)
 - To update IP/port later: open the integration and click `Configure`
 
-### Integration icon (Home Assistant 2026.3+)
-
-This project ships local brand assets inside:
-
-- `custom_components/apple_tts/brand/icon.png`
-- `custom_components/apple_tts/brand/logo.png`
-- `custom_components/apple_tts/brand/dark_icon.png`
-- `custom_components/apple_tts/brand/dark_logo.png`
-
-These are served by Home Assistant's local brands proxy API.  
-They are not expected to appear on `https://brands.home-assistant.io/_/apple_tts/...`.
-
 ## 3) Use `tts.speak`
 
 Example action:
