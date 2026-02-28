@@ -7,7 +7,7 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 from .api import fetch_voices_by_language
-from .control import async_shutdown_server
+from .control import async_restart_server, async_shutdown_server
 from .const import (
     CONF_HOST,
     CONF_PORT,
@@ -25,6 +25,7 @@ from .const import (
     OPTION_VOLUME,
     OPTION_VOICE,
     SERVICE_RESET,
+    SERVICE_RESTART,
     SERVICE_SHUTDOWN,
 )
 
@@ -39,6 +40,7 @@ RESET_SCHEMA = vol.Schema(
     }
 )
 SHUTDOWN_SCHEMA = vol.Schema({vol.Optional("entry_id"): str})
+RESTART_SCHEMA = vol.Schema({vol.Optional("entry_id"): str})
 
 
 def _update_signal(entry_id: str) -> str:
@@ -86,6 +88,19 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 
         await async_shutdown_server(hass, target)
 
+    async def _handle_restart(call) -> None:
+        domain_data = hass.data.get(DOMAIN, {})
+        if not isinstance(domain_data, dict) or not domain_data:
+            raise HomeAssistantError("Apple TTS is not configured")
+
+        entry_id = call.data.get("entry_id")
+        if entry_id and entry_id in domain_data:
+            target = domain_data[entry_id]
+        else:
+            target = next(iter(domain_data.values()))
+
+        await async_restart_server(hass, target)
+
     if not hass.services.has_service(DOMAIN, SERVICE_RESET):
         hass.services.async_register(
             DOMAIN,
@@ -99,6 +114,13 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
             SERVICE_SHUTDOWN,
             _handle_shutdown,
             schema=SHUTDOWN_SCHEMA,
+        )
+    if not hass.services.has_service(DOMAIN, SERVICE_RESTART):
+        hass.services.async_register(
+            DOMAIN,
+            SERVICE_RESTART,
+            _handle_restart,
+            schema=RESTART_SCHEMA,
         )
     return True
 
@@ -147,4 +169,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             hass.services.async_remove(DOMAIN, SERVICE_RESET)
         if not hass.data[DOMAIN] and hass.services.has_service(DOMAIN, SERVICE_SHUTDOWN):
             hass.services.async_remove(DOMAIN, SERVICE_SHUTDOWN)
+        if not hass.data[DOMAIN] and hass.services.has_service(DOMAIN, SERVICE_RESTART):
+            hass.services.async_remove(DOMAIN, SERVICE_RESTART)
     return unload_ok

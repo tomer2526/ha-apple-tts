@@ -4,7 +4,10 @@ import hashlib
 import os
 import re
 import subprocess
+import sys
 import tempfile
+import threading
+import time
 from pathlib import Path
 
 from flask import Flask, Response, abort, jsonify, request, send_file
@@ -116,6 +119,17 @@ def shutdown():
         abort(503, description="Shutdown is not available in this server mode")
     shutdown_fn()
     return {"status": "shutting_down"}, 200
+
+
+@app.post("/restart")
+def restart():
+    def _restart_process() -> None:
+        # Let Flask flush the response before replacing the process.
+        time.sleep(0.2)
+        os.execv(sys.executable, [sys.executable, *sys.argv])
+
+    threading.Thread(target=_restart_process, daemon=True).start()
+    return {"status": "restarting"}, 200
 
 
 @app.get("/tts")
