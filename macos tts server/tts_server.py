@@ -12,7 +12,7 @@ from flask import Flask, Response, abort, jsonify, request, send_file
 APP_HOST = os.getenv("APPLE_TTS_HOST", "0.0.0.0")
 APP_PORT = int(os.getenv("APPLE_TTS_PORT", "5002"))
 CACHE_DIR = Path(os.getenv("APPLE_TTS_CACHE_DIR", "/tmp/apple_tts_cache"))
-DEFAULT_VOICE = os.getenv("APPLE_TTS_DEFAULT_VOICE", "Carmit")
+DEFAULT_VOICE = os.getenv("APPLE_TTS_DEFAULT_VOICE", "Samantha")
 DEFAULT_RATE = int(os.getenv("APPLE_TTS_DEFAULT_RATE", "170"))
 DEFAULT_PITCH = int(os.getenv("APPLE_TTS_DEFAULT_PITCH", "50"))
 DEFAULT_VOLUME = int(os.getenv("APPLE_TTS_DEFAULT_VOLUME", "100"))

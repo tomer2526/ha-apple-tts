@@ -31,7 +31,7 @@ Quick checks:
 ```bash
 curl "http://127.0.0.1:5002/health"
 curl "http://127.0.0.1:5002/voices"
-curl -o sample.aiff "http://127.0.0.1:5002/tts?text=שלום&voice=Carmit&rate=170"
+curl -o sample.aiff "http://127.0.0.1:5002/tts?text=Hello&voice=Samantha&rate=170"
 ```
 
 ### Optional autostart with LaunchAgent
@@ -71,10 +71,10 @@ action:
       entity_id: tts.apple_tts
     data:
       media_player_entity_id: media_player.homepod_tvmr
-      message: "שלום תומר"
+      message: "Hello Tomer"
       cache: true
       options:
-        voice: Carmit
+        voice: Samantha
         rate: 170
 ```
 
@@ -89,6 +89,14 @@ The integration also creates helper entities you can control from the UI:
 - `number.apple_tts_volume`
 
 When `tts.speak` is called without explicit `options`, these values are used as defaults.
+
+Reset defaults (without button entities) using service:
+
+```yaml
+service: apple_tts.reset_defaults
+data:
+  target: all   # rate | pitch | volume | all
+```
 
 ## Notes
 
