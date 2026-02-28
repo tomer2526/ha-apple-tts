@@ -14,6 +14,7 @@ Custom Home Assistant TTS provider that uses a small macOS Flask server wrapping
 
 - `custom_components/apple_tts/` - Home Assistant custom integration
 - `macos tts server/` - Flask server that generates AIFF from `say`
+- `custom_components/apple_tts/brand/` - local branding images for Home Assistant 2026.3+
 
 ## Quick install from GitHub
 
@@ -96,18 +97,32 @@ cd "macos tts server"
 
 ## 2) Install the Home Assistant custom component
 
-Copy `custom_components/apple_tts` into your Home Assistant config:
+Install via HACS:
 
-```text
-/config/custom_components/apple_tts/
-```
+1. Open `HACS -> Integrations -> ⋮ -> Custom repositories`.
+2. Add repository URL: `https://github.com/tomer2526/ha-apple-tts`
+3. Category: `Integration`
+4. Find `Apple TTS` in HACS and install it.
+5. Restart Home Assistant.
 
-Restart Home Assistant, then add integration:
+Then add integration:
 
 - `Settings -> Devices & Services -> Add Integration`
 - Choose `Apple TTS`
 - Enter Mac host and port (default `5002`)
 - To update IP/port later: open the integration and click `Configure`
+
+### Integration icon (Home Assistant 2026.3+)
+
+This project ships local brand assets inside:
+
+- `custom_components/apple_tts/brand/icon.png`
+- `custom_components/apple_tts/brand/logo.png`
+- `custom_components/apple_tts/brand/dark_icon.png`
+- `custom_components/apple_tts/brand/dark_logo.png`
+
+These are served by Home Assistant's local brands proxy API.  
+They are not expected to appear on `https://brands.home-assistant.io/_/apple_tts/...`.
 
 ## 3) Use `tts.speak`
 
@@ -138,6 +153,8 @@ The integration also creates helper entities you can control from the UI:
 - `number.apple_tts_rate`
 - `number.apple_tts_pitch`
 - `number.apple_tts_volume`
+
+There are no start/stop button entities in the integration.
 
 When `tts.speak` is called without explicit `options`, these values are used as defaults.
 
