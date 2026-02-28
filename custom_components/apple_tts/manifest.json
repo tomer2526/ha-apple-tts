@@ -1,8 +1,9 @@
 {
   "domain": "apple_tts",
   "name": "Apple TTS",
-  "version": "0.0.4",
-  "documentation": "",
+  "version": "0.0.5",
+  "documentation": "https://github.com/tomershami/ha-apple-tts",
+  "iot_class": "local_push",
   "requirements": [],
   "dependencies": [],
   "config_flow": true,

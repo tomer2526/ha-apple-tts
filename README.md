@@ -1,0 +1,87 @@
+# Apple TTS for Home Assistant (macOS `say`)
+
+Custom Home Assistant TTS provider that uses a small macOS Flask server wrapping Apple `say` voices.
+
+## What you get
+
+- Home Assistant service support via `tts.speak`
+- Works with any `media_player` that HA TTS supports
+- Voice and rate control via `options`
+- Language list from macOS voices (`/voices`)
+- Server-side cache for repeated messages
+
+## Project layout
+
+- `custom_components/apple_tts/` - Home Assistant custom integration
+- `macos tts server/` - Flask server that generates AIFF from `say`
+
+## 1) Run the macOS TTS server
+
+From this repository on your Mac:
+
+```bash
+cd "macos tts server"
+./start_tts.sh
+```
+
+The script creates a local `.venv`, installs `Flask`, and starts the service on `http://0.0.0.0:5002`.
+
+Quick checks:
+
+```bash
+curl "http://127.0.0.1:5002/health"
+curl "http://127.0.0.1:5002/voices"
+curl -o sample.aiff "http://127.0.0.1:5002/tts?text=שלום&voice=Carmit&rate=170"
+```
+
+### Optional autostart with LaunchAgent
+
+1. Edit `macos tts server/com.appletts.server.plist` and replace `/ABSOLUTE/PATH/TO/...` with your real path.
+2. Copy to `~/Library/LaunchAgents/com.appletts.server.plist`.
+3. Load it:
+
+```bash
+launchctl unload ~/Library/LaunchAgents/com.appletts.server.plist 2>/dev/null || true
+launchctl load ~/Library/LaunchAgents/com.appletts.server.plist
+launchctl list | rg appletts
+```
+
+## 2) Install the Home Assistant custom component
+
+Copy `custom_components/apple_tts` into your Home Assistant config:
+
+```text
+/config/custom_components/apple_tts/
+```
+
+Restart Home Assistant, then add integration:
+
+- `Settings -> Devices & Services -> Add Integration`
+- Choose `Apple TTS`
+- Enter Mac host and port (default `5002`)
+
+## 3) Use `tts.speak`
+
+Example action:
+
+```yaml
+action:
+  - service: tts.speak
+    target:
+      entity_id: tts.apple_tts
+    data:
+      media_player_entity_id: media_player.homepod_tvmr
+      message: "שלום תומר"
+      cache: true
+      options:
+        voice: Carmit
+        rate: 170
+```
+
+You can reuse this in Scripts, Automations, and Developer Tools.
+
+## Notes
+
+- Hebrew voice is usually `Carmit` (not `Carmel`).
+- On shell, use `say -v "?"` if `?` is expanded.
+- Keep Flask in a venv (already handled by `start_tts.sh`).
