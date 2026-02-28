@@ -18,11 +18,10 @@ Custom Home Assistant TTS provider that uses a small macOS Flask server wrapping
 
 ## Step 1: Install and run the macOS server
 
-Clone/download the repository, then run:
+Fast install + run (one command):
 
 ```bash
-cd "/path/to/ha-apple-tts/macos tts server"
-./start_tts.sh
+cd /tmp && rm -rf ha-apple-tts-main ha-apple-tts.zip && curl -L -o ha-apple-tts.zip https://github.com/tomer2526/ha-apple-tts/archive/refs/heads/main.zip && unzip -oq ha-apple-tts.zip && cd "ha-apple-tts-main/macos tts server" && chmod +x start_tts.sh install_launchagent.sh && ./start_tts.sh
 ```
 
 The script creates a local `.venv`, installs `Flask`, and starts the service on `http://0.0.0.0:5002`.
