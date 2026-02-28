@@ -6,7 +6,7 @@ Custom Home Assistant TTS provider that uses a small macOS Flask server wrapping
 
 - Home Assistant service support via `tts.speak`
 - Works with any `media_player` that HA TTS supports
-- Voice and rate control via `options`
+- Voice, rate, pitch, and volume control via `options`
 - Language list from macOS voices (`/voices`)
 - Server-side cache for repeated messages
 
@@ -26,6 +26,12 @@ cd "macos tts server"
 
 The script creates a local `.venv`, installs `Flask`, and starts the service on `http://0.0.0.0:5002`.
 
+Stop a running server:
+
+```bash
+python3 stop_tts_server.py
+```
+
 Quick checks:
 
 ```bash
@@ -36,14 +42,26 @@ curl -o sample.aiff "http://127.0.0.1:5002/tts?text=Hello&voice=Samantha&rate=17
 
 ### Optional autostart with LaunchAgent
 
-1. Edit `macos tts server/com.appletts.server.plist` and replace `/ABSOLUTE/PATH/TO/...` with your real path.
-2. Copy to `~/Library/LaunchAgents/com.appletts.server.plist`.
-3. Load it:
+Generic install (no manual path edits):
+
+```bash
+cd "macos tts server"
+./install_launchagent.sh
+```
+
+Manual load/unload commands:
 
 ```bash
 launchctl unload ~/Library/LaunchAgents/com.appletts.server.plist 2>/dev/null || true
 launchctl load ~/Library/LaunchAgents/com.appletts.server.plist
 launchctl list | rg appletts
+```
+
+Remove autostart:
+
+```bash
+cd "macos tts server"
+./uninstall_launchagent.sh
 ```
 
 ## 2) Install the Home Assistant custom component
@@ -76,6 +94,8 @@ action:
       options:
         voice: Samantha
         rate: 170
+        pitch: 50
+        volume: 100
 ```
 
 You can reuse this in Scripts, Automations, and Developer Tools.
@@ -96,10 +116,12 @@ Reset defaults (without button entities) using service:
 service: apple_tts.reset_defaults
 data:
   target: all   # rate | pitch | volume | all
+  # entry_id: "<optional-config-entry-id>"
 ```
 
 ## Notes
 
+- Integration defaults are `language: en_US` and `voice: Samantha`.
 - Hebrew voice is usually `Carmit` (not `Carmel`).
 - On shell, use `say -v "?"` if `?` is expanded.
 - Keep Flask in a venv (already handled by `start_tts.sh`).
