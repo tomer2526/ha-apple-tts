@@ -139,7 +139,7 @@ The integration also creates helper entities you can control from the UI:
 - `number.apple_tts_pitch`
 - `number.apple_tts_volume`
 - `button.apple_tts_shutdown_server`
-- `button.apple_tts_restart_server`
+- `button.apple_tts_start_server`
 
 When `tts.speak` is called without explicit `options`, these values are used as defaults.
 
@@ -162,21 +162,22 @@ data:
 
 You can also press the `button.apple_tts_shutdown_server` entity from the UI.
 
-Restart the macOS TTS server from Home Assistant:
+Start the macOS TTS server from Home Assistant:
 
 ```yaml
-service: apple_tts.restart_server
+service: apple_tts.start_server
 data:
   # entry_id: "<optional-config-entry-id>"
 ```
 
-You can also press the `button.apple_tts_restart_server` entity from the UI.
+You can also press the `button.apple_tts_start_server` entity from the UI.
 
 ## Notes
 
 - This integration uses macOS `say` (Speech Synthesis), not Siri assistant voices.
 - Why: Siri voices are not exposed as a stable local CLI API, while `say` is a supported system interface that works reliably for automation/server use.
 - Result: voice quality and voice list come from `say -v ?`, not from Siri's assistant voice stack.
+- `Shutdown/Start` are logical controls for TTS processing; they do not close/open your terminal session.
 - To download more voices/languages on macOS:
   1. Open `System Settings -> Accessibility -> Spoken Content -> System Voice`.
   2. Click voice selection/management (`Manage Voices...` or download icon, depending on macOS version).

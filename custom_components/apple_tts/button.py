@@ -5,7 +5,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from .control import async_restart_server, async_shutdown_server
+from .control import async_shutdown_server, async_start_server
 from .const import DOMAIN
 
 
@@ -17,7 +17,7 @@ async def async_setup_entry(
     async_add_entities(
         [
             AppleTTSShutdownButton(config_entry),
-            AppleTTSRestartButton(config_entry),
+            AppleTTSStartButton(config_entry),
         ]
     )
 
@@ -36,15 +36,15 @@ class AppleTTSShutdownButton(ButtonEntity):
         await async_shutdown_server(self.hass, entry_data)
 
 
-class AppleTTSRestartButton(ButtonEntity):
+class AppleTTSStartButton(ButtonEntity):
     _attr_has_entity_name = True
-    _attr_name = "Restart Server"
-    _attr_icon = "mdi:restart"
+    _attr_name = "Start Server"
+    _attr_icon = "mdi:server-plus"
 
     def __init__(self, config_entry: ConfigEntry) -> None:
         self._entry_id = config_entry.entry_id
-        self._attr_unique_id = f"{config_entry.entry_id}_restart_server"
+        self._attr_unique_id = f"{config_entry.entry_id}_start_server"
 
     async def async_press(self) -> None:
         entry_data = self.hass.data[DOMAIN][self._entry_id]
-        await async_restart_server(self.hass, entry_data)
+        await async_start_server(self.hass, entry_data)

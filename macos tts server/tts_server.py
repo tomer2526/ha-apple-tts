@@ -4,10 +4,7 @@ import hashlib
 import os
 import re
 import subprocess
-import sys
 import tempfile
-import threading
-import time
 from pathlib import Path
 
 from flask import Flask, Response, abort, jsonify, request, send_file
@@ -23,6 +20,7 @@ MAX_TEXT_LENGTH = int(os.getenv("APPLE_TTS_MAX_TEXT_LENGTH", "1200"))
 
 app = Flask(__name__)
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
+SERVER_ENABLED = True
 
 
 def _normalize_language(raw_language: str) -> str | None:
@@ -101,7 +99,7 @@ def _parse_int_option(
 
 @app.get("/health")
 def health() -> tuple[dict[str, str], int]:
-    return {"status": "ok"}, 200
+    return {"status": "ok" if SERVER_ENABLED else "stopped"}, 200
 
 
 @app.get("/voices")
@@ -114,26 +112,23 @@ def voices():
 
 @app.post("/shutdown")
 def shutdown():
-    shutdown_fn = request.environ.get("werkzeug.server.shutdown")
-    if shutdown_fn is None:
-        abort(503, description="Shutdown is not available in this server mode")
-    shutdown_fn()
-    return {"status": "shutting_down"}, 200
+    global SERVER_ENABLED
+    SERVER_ENABLED = False
+    return {"status": "stopped"}, 200
 
 
-@app.post("/restart")
-def restart():
-    def _restart_process() -> None:
-        # Let Flask flush the response before replacing the process.
-        time.sleep(0.2)
-        os.execv(sys.executable, [sys.executable, *sys.argv])
-
-    threading.Thread(target=_restart_process, daemon=True).start()
-    return {"status": "restarting"}, 200
+@app.post("/start")
+def start():
+    global SERVER_ENABLED
+    SERVER_ENABLED = True
+    return {"status": "running"}, 200
 
 
 @app.get("/tts")
 def tts():
+    if not SERVER_ENABLED:
+        abort(503, description="TTS server is stopped")
+
     text = request.args.get("text", "").strip()
     voice = request.args.get("voice", DEFAULT_VOICE).strip()
     rate = request.args.get("rate", str(DEFAULT_RATE)).strip()

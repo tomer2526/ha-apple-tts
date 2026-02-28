@@ -7,7 +7,7 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 from .api import fetch_voices_by_language
-from .control import async_restart_server, async_shutdown_server
+from .control import async_shutdown_server, async_start_server
 from .const import (
     CONF_HOST,
     CONF_PORT,
@@ -25,7 +25,7 @@ from .const import (
     OPTION_VOLUME,
     OPTION_VOICE,
     SERVICE_RESET,
-    SERVICE_RESTART,
+    SERVICE_START,
     SERVICE_SHUTDOWN,
 )
 
@@ -40,7 +40,7 @@ RESET_SCHEMA = vol.Schema(
     }
 )
 SHUTDOWN_SCHEMA = vol.Schema({vol.Optional("entry_id"): str})
-RESTART_SCHEMA = vol.Schema({vol.Optional("entry_id"): str})
+START_SCHEMA = vol.Schema({vol.Optional("entry_id"): str})
 
 
 def _update_signal(entry_id: str) -> str:
@@ -88,7 +88,7 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 
         await async_shutdown_server(hass, target)
 
-    async def _handle_restart(call) -> None:
+    async def _handle_start(call) -> None:
         domain_data = hass.data.get(DOMAIN, {})
         if not isinstance(domain_data, dict) or not domain_data:
             raise HomeAssistantError("Apple TTS is not configured")
@@ -99,7 +99,7 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
         else:
             target = next(iter(domain_data.values()))
 
-        await async_restart_server(hass, target)
+        await async_start_server(hass, target)
 
     if not hass.services.has_service(DOMAIN, SERVICE_RESET):
         hass.services.async_register(
@@ -115,12 +115,12 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
             _handle_shutdown,
             schema=SHUTDOWN_SCHEMA,
         )
-    if not hass.services.has_service(DOMAIN, SERVICE_RESTART):
+    if not hass.services.has_service(DOMAIN, SERVICE_START):
         hass.services.async_register(
             DOMAIN,
-            SERVICE_RESTART,
-            _handle_restart,
-            schema=RESTART_SCHEMA,
+            SERVICE_START,
+            _handle_start,
+            schema=START_SCHEMA,
         )
     return True
 
@@ -169,6 +169,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             hass.services.async_remove(DOMAIN, SERVICE_RESET)
         if not hass.data[DOMAIN] and hass.services.has_service(DOMAIN, SERVICE_SHUTDOWN):
             hass.services.async_remove(DOMAIN, SERVICE_SHUTDOWN)
-        if not hass.data[DOMAIN] and hass.services.has_service(DOMAIN, SERVICE_RESTART):
-            hass.services.async_remove(DOMAIN, SERVICE_RESTART)
+        if not hass.data[DOMAIN] and hass.services.has_service(DOMAIN, SERVICE_START):
+            hass.services.async_remove(DOMAIN, SERVICE_START)
     return unload_ok
