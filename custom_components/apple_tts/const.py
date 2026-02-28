@@ -1,0 +1,8 @@
+DOMAIN = "apple_tts"
+
+CONF_HOST = "host"
+CONF_PORT = "port"
+
+DEFAULT_PORT = 5002
+DEFAULT_RATE = 180
+DEFAULT_VOICE = "Carmit"

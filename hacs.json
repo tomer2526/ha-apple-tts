@@ -1,0 +1,6 @@
+{
+  "name": "Apple TTS",
+  "content_in_root": false,
+  "domains": ["apple_tts"],
+  "iot_class": "local_polling"
+}
