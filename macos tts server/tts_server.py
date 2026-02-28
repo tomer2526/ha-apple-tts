@@ -109,6 +109,15 @@ def voices():
         abort(500, description=f"Failed listing voices: {err}")
 
 
+@app.post("/shutdown")
+def shutdown():
+    shutdown_fn = request.environ.get("werkzeug.server.shutdown")
+    if shutdown_fn is None:
+        abort(503, description="Shutdown is not available in this server mode")
+    shutdown_fn()
+    return {"status": "shutting_down"}, 200
+
+
 @app.get("/tts")
 def tts():
     text = request.args.get("text", "").strip()

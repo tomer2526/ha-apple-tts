@@ -56,6 +56,12 @@ Stop a running server:
 python3 stop_tts_server.py
 ```
 
+Restart server:
+
+```bash
+./restart_tts_server.sh
+```
+
 Quick checks:
 
 ```bash
@@ -144,12 +150,23 @@ data:
   # entry_id: "<optional-config-entry-id>"
 ```
 
+Shut down the macOS TTS server from Home Assistant:
+
+```yaml
+service: apple_tts.shutdown_server
+data:
+  # entry_id: "<optional-config-entry-id>"
+```
+
 ## Notes
 
 - This integration uses macOS `say` (Speech Synthesis), not Siri assistant voices.
 - Why: Siri voices are not exposed as a stable local CLI API, while `say` is a supported system interface that works reliably for automation/server use.
 - Result: voice quality and voice list come from `say -v ?`, not from Siri's assistant voice stack.
+- To download more voices/languages on macOS:
+  1. Open `System Settings -> Accessibility -> Spoken Content -> System Voice`.
+  2. Click voice selection/management (`Manage Voices...` or download icon, depending on macOS version).
+  3. Download the languages/voices you want.
+  4. Verify in terminal with `say -v "?"`.
+  5. Restart the Apple TTS server (and restart Home Assistant if needed) so the new voices appear in the integration.
 - Integration defaults are `language: en_US` and `voice: Samantha`.
-- Hebrew voice is usually `Carmit` (not `Carmel`).
-- On shell, use `say -v "?"` if `?` is expanded.
-- Keep Flask in a venv (already handled by `start_tts.sh`).
