@@ -25,8 +25,22 @@ async def async_get_engine(
     hass: HomeAssistant, config: dict[str, Any], discovery_info: Any | None = None
 ) -> "AppleTTSEngine":
     entry_id = config.get("entry_id")
-    if entry_id and isinstance(hass.data.get(DOMAIN), dict) and entry_id in hass.data[DOMAIN]:
-        engine_config = hass.data[DOMAIN][entry_id]
+    domain_data = hass.data.get(DOMAIN, {})
+
+    if entry_id and isinstance(domain_data, dict) and entry_id in domain_data:
+        engine_config = domain_data[entry_id]
+    elif isinstance(domain_data, dict) and "host" in domain_data and "port" in domain_data:
+        # Backward compatibility for older storage shape: hass.data[DOMAIN] = entry.data
+        engine_config = domain_data
+    elif isinstance(domain_data, dict):
+        engine_config = next(
+            (
+                value
+                for value in domain_data.values()
+                if isinstance(value, dict) and "host" in value and "port" in value
+            ),
+            config,
+        )
     else:
         engine_config = config
     return AppleTTSEngine(engine_config)
