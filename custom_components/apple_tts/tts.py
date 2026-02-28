@@ -6,7 +6,7 @@ from urllib.parse import urlencode
 import requests
 from homeassistant.components.tts import Provider, TextToSpeechEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import DEFAULT_RATE, DEFAULT_VOICE, DOMAIN
@@ -21,7 +21,21 @@ async def async_setup_entry(
 ) -> bool:
     """Set up Apple TTS entity from config entry."""
     data = hass.data[DOMAIN][config_entry.entry_id]
-    async_add_entities([AppleTTSEntity(config_entry, data["host"], data["port"])])
+    voices_by_language = await hass.async_add_executor_job(
+        _fetch_voices_by_language,
+        data["host"],
+        data["port"],
+    )
+    async_add_entities(
+        [
+            AppleTTSEntity(
+                config_entry,
+                data["host"],
+                data["port"],
+                voices_by_language,
+            )
+        ]
+    )
     return True
 
 
@@ -49,11 +63,18 @@ class AppleTTSEntity(TextToSpeechEntity):
 
     _attr_name = "Apple TTS"
 
-    def __init__(self, config_entry: ConfigEntry, host: str, port: int) -> None:
+    def __init__(
+        self,
+        config_entry: ConfigEntry,
+        host: str,
+        port: int,
+        voices_by_language: dict[str, list[str]],
+    ) -> None:
         self._attr_unique_id = config_entry.entry_id
         self._host = host
         self._port = port
-        self._supported_languages = _fetch_supported_languages(host, port)
+        self._voices_by_language = voices_by_language
+        self._supported_languages = sorted(voices_by_language) or ["he_IL"]
 
     @property
     def default_language(self) -> str:
@@ -66,6 +87,11 @@ class AppleTTSEntity(TextToSpeechEntity):
     @property
     def supported_options(self) -> list[str]:
         return ["voice", "rate"]
+
+    @callback
+    def async_get_supported_voices(self, language: str) -> list[str] | None:
+        normalized = (language or "he_IL").replace("-", "_")
+        return self._voices_by_language.get(normalized)
 
     def get_tts_audio(
         self,
@@ -92,7 +118,8 @@ class AppleTTSEngine(Provider):
     def supported_languages(self) -> list[str]:
         if not self.host or not self.port:
             return ["he_IL"]
-        return _fetch_supported_languages(self.host, self.port)
+        voices_by_language = _fetch_voices_by_language(self.host, self.port)
+        return sorted(voices_by_language) or ["he_IL"]
 
     @property
     def supported_options(self) -> list[str]:
@@ -107,20 +134,34 @@ class AppleTTSEngine(Provider):
 
 
 def _fetch_supported_languages(host: str, port: int) -> list[str]:
+    return sorted(_fetch_voices_by_language(host, port)) or ["he_IL"]
+
+
+def _fetch_voices_by_language(host: str, port: int) -> dict[str, list[str]]:
     try:
         response = requests.get(f"http://{host}:{port}/voices", timeout=REQUEST_TIMEOUT)
         response.raise_for_status()
-        voices = response.json()
-        languages = sorted(
-            {
-                voice["language"].replace("-", "_")
-                for voice in voices
-                if isinstance(voice, dict) and isinstance(voice.get("language"), str)
-            }
-        )
-        return languages or ["he_IL"]
+        raw_voices = response.json()
     except Exception:
-        return ["he_IL"]
+        return {}
+
+    voices_by_language: dict[str, set[str]] = {}
+    for item in raw_voices:
+        if not isinstance(item, dict):
+            continue
+
+        voice_name = item.get("voice")
+        language = item.get("language")
+        if not isinstance(voice_name, str) or not isinstance(language, str):
+            continue
+
+        normalized_language = language.replace("-", "_")
+        voices_by_language.setdefault(normalized_language, set()).add(voice_name)
+
+    return {
+        language: sorted(voices)
+        for language, voices in voices_by_language.items()
+    }
 
 
 def _get_tts_audio(
@@ -131,7 +172,12 @@ def _get_tts_audio(
     options: dict[str, Any] | None,
 ) -> tuple[str, bytes] | None:
     options = options or {}
-    voice = options.get("voice", DEFAULT_VOICE)
+    voice = options.get("voice")
+    if not voice:
+        voices_by_language = _fetch_voices_by_language(host, port)
+        normalized_language = (language or "he_IL").replace("-", "_")
+        language_voices = voices_by_language.get(normalized_language, [])
+        voice = language_voices[0] if language_voices else DEFAULT_VOICE
     rate = options.get("rate", DEFAULT_RATE)
     params = urlencode(
         {"text": message, "voice": voice, "rate": rate, "language": language},
