@@ -22,5 +22,3 @@ MIN_VOLUME = 0
 MAX_VOLUME = 100
 HTTP_TIMEOUT = 15
 SERVICE_RESET = "reset_defaults"
-SERVICE_SHUTDOWN = "shutdown_server"
-SERVICE_START = "start_server"

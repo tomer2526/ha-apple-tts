@@ -3,11 +3,9 @@ from __future__ import annotations
 import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 from .api import fetch_voices_by_language
-from .control import async_shutdown_server, async_start_server
 from .const import (
     CONF_HOST,
     CONF_PORT,
@@ -25,11 +23,9 @@ from .const import (
     OPTION_VOLUME,
     OPTION_VOICE,
     SERVICE_RESET,
-    SERVICE_START,
-    SERVICE_SHUTDOWN,
 )
 
-PLATFORMS = ["tts", "number", "button"]
+PLATFORMS = ["tts", "number"]
 
 RESET_SCHEMA = vol.Schema(
     {
@@ -39,8 +35,6 @@ RESET_SCHEMA = vol.Schema(
         ),
     }
 )
-SHUTDOWN_SCHEMA = vol.Schema({vol.Optional("entry_id"): str})
-START_SCHEMA = vol.Schema({vol.Optional("entry_id"): str})
 
 
 def _update_signal(entry_id: str) -> str:
@@ -75,52 +69,12 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
             if changed:
                 async_dispatcher_send(hass, _update_signal(item["entry_id"]))
 
-    async def _handle_shutdown(call) -> None:
-        domain_data = hass.data.get(DOMAIN, {})
-        if not isinstance(domain_data, dict) or not domain_data:
-            raise HomeAssistantError("Apple TTS is not configured")
-
-        entry_id = call.data.get("entry_id")
-        if entry_id and entry_id in domain_data:
-            target = domain_data[entry_id]
-        else:
-            target = next(iter(domain_data.values()))
-
-        await async_shutdown_server(hass, target)
-
-    async def _handle_start(call) -> None:
-        domain_data = hass.data.get(DOMAIN, {})
-        if not isinstance(domain_data, dict) or not domain_data:
-            raise HomeAssistantError("Apple TTS is not configured")
-
-        entry_id = call.data.get("entry_id")
-        if entry_id and entry_id in domain_data:
-            target = domain_data[entry_id]
-        else:
-            target = next(iter(domain_data.values()))
-
-        await async_start_server(hass, target)
-
     if not hass.services.has_service(DOMAIN, SERVICE_RESET):
         hass.services.async_register(
             DOMAIN,
             SERVICE_RESET,
             _handle_reset,
             schema=RESET_SCHEMA,
-        )
-    if not hass.services.has_service(DOMAIN, SERVICE_SHUTDOWN):
-        hass.services.async_register(
-            DOMAIN,
-            SERVICE_SHUTDOWN,
-            _handle_shutdown,
-            schema=SHUTDOWN_SCHEMA,
-        )
-    if not hass.services.has_service(DOMAIN, SERVICE_START):
-        hass.services.async_register(
-            DOMAIN,
-            SERVICE_START,
-            _handle_start,
-            schema=START_SCHEMA,
         )
     return True
 
@@ -167,8 +121,4 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.data[DOMAIN].pop(entry.entry_id, None)
         if not hass.data[DOMAIN] and hass.services.has_service(DOMAIN, SERVICE_RESET):
             hass.services.async_remove(DOMAIN, SERVICE_RESET)
-        if not hass.data[DOMAIN] and hass.services.has_service(DOMAIN, SERVICE_SHUTDOWN):
-            hass.services.async_remove(DOMAIN, SERVICE_SHUTDOWN)
-        if not hass.data[DOMAIN] and hass.services.has_service(DOMAIN, SERVICE_START):
-            hass.services.async_remove(DOMAIN, SERVICE_START)
     return unload_ok
