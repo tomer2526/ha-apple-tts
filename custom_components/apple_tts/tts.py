@@ -90,7 +90,7 @@ class AppleTTSEntity(TextToSpeechEntity):
 
     @property
     def supported_options(self) -> list[str]:
-        return ["voice", "rate"]
+        return ["voice", "rate", "pitch", "volume"]
 
     @callback
     def async_get_supported_voices(self, language: str) -> list[Voice] | None:
@@ -130,7 +130,7 @@ class AppleTTSEngine(Provider):
 
     @property
     def supported_options(self) -> list[str]:
-        return ["voice", "rate"]
+        return ["voice", "rate", "pitch", "volume"]
 
     def get_tts_audio(
         self, message: str, language: str, options: dict[str, Any] | None = None
@@ -190,11 +190,20 @@ def _get_tts_audio(
         language_voices = voices_by_language.get(normalized_language, [])
         voice = language_voices[0] if language_voices else DEFAULT_VOICE
     rate = options.get("rate", DEFAULT_RATE)
-    params = urlencode(
-        {"text": message, "voice": voice, "rate": rate, "language": language},
-        doseq=False,
-        safe="",
-    )
+    pitch = options.get("pitch")
+    volume = options.get("volume")
+    query_params: dict[str, Any] = {
+        "text": message,
+        "voice": voice,
+        "rate": rate,
+        "language": language,
+    }
+    if pitch is not None:
+        query_params["pitch"] = pitch
+    if volume is not None:
+        query_params["volume"] = volume
+
+    params = urlencode(query_params, doseq=False, safe="")
 
     try:
         response = requests.get(

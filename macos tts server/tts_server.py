@@ -14,6 +14,8 @@ APP_PORT = int(os.getenv("APPLE_TTS_PORT", "5002"))
 CACHE_DIR = Path(os.getenv("APPLE_TTS_CACHE_DIR", "/tmp/apple_tts_cache"))
 DEFAULT_VOICE = os.getenv("APPLE_TTS_DEFAULT_VOICE", "Carmit")
 DEFAULT_RATE = int(os.getenv("APPLE_TTS_DEFAULT_RATE", "170"))
+DEFAULT_PITCH = int(os.getenv("APPLE_TTS_DEFAULT_PITCH", "50"))
+DEFAULT_VOLUME = int(os.getenv("APPLE_TTS_DEFAULT_VOLUME", "100"))
 MAX_TEXT_LENGTH = int(os.getenv("APPLE_TTS_MAX_TEXT_LENGTH", "1200"))
 
 app = Flask(__name__)
@@ -73,6 +75,27 @@ def _cache_key(text: str, voice: str, rate: str, language: str) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
+def _parse_int_option(
+    raw_value: str | None,
+    *,
+    default: int,
+    minimum: int,
+    maximum: int,
+    name: str,
+) -> int:
+    if raw_value is None or raw_value == "":
+        return default
+
+    try:
+        value = int(raw_value)
+    except ValueError as err:
+        raise ValueError(f"Invalid {name}") from err
+
+    if value < minimum or value > maximum:
+        raise ValueError(f"{name} out of range ({minimum}-{maximum})")
+    return value
+
+
 @app.get("/health")
 def health() -> tuple[dict[str, str], int]:
     return {"status": "ok"}, 200
@@ -92,6 +115,8 @@ def tts():
     voice = request.args.get("voice", DEFAULT_VOICE).strip()
     rate = request.args.get("rate", str(DEFAULT_RATE)).strip()
     language = request.args.get("language", "").strip()
+    raw_pitch = request.args.get("pitch")
+    raw_volume = request.args.get("volume")
     use_cache = request.args.get("cache", "true").lower() != "false"
 
     if not text:
@@ -103,16 +128,40 @@ def tts():
     if not _voice_exists(voice):
         abort(400, description=f"Unknown voice: {voice}")
 
-    key = _cache_key(text, voice, rate, language)
+    try:
+        pitch = _parse_int_option(
+            raw_pitch,
+            default=DEFAULT_PITCH,
+            minimum=0,
+            maximum=99,
+            name="pitch",
+        )
+        volume = _parse_int_option(
+            raw_volume,
+            default=DEFAULT_VOLUME,
+            minimum=0,
+            maximum=100,
+            name="volume",
+        )
+    except ValueError as err:
+        abort(400, description=str(err))
+
+    key = _cache_key(
+        text,
+        voice,
+        rate,
+        f"{language}|p:{pitch}|v:{volume}",
+    )
     cache_path = CACHE_DIR / f"{key}.aiff"
     if use_cache and cache_path.exists():
         return send_file(cache_path, mimetype="audio/aiff")
 
     with tempfile.TemporaryDirectory(prefix="apple_tts_") as temp_dir:
         temp_path = Path(temp_dir) / "speech.aiff"
+        speech_text = f"[[volm {volume / 100:.2f}]] [[pbas {pitch}]] {text}"
         try:
             subprocess.run(
-                ["say", "-v", voice, "-r", rate, "-o", str(temp_path), text],
+                ["say", "-v", voice, "-r", rate, "-o", str(temp_path), speech_text],
                 capture_output=True,
                 text=True,
                 check=True,
