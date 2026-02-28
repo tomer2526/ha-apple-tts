@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import inspect
 import re
 from typing import Any
 from urllib.parse import urlencode
@@ -8,7 +7,7 @@ from urllib.parse import urlencode
 import requests
 from homeassistant.components.tts import Provider, TextToSpeechEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .const import DEFAULT_RATE, DEFAULT_VOICE, DOMAIN
@@ -16,10 +15,7 @@ from .const import DEFAULT_RATE, DEFAULT_VOICE, DOMAIN
 REQUEST_TIMEOUT = 15
 LANGUAGE_RE = re.compile(r"^[a-z]{2,3}_[A-Z0-9]{2,8}$")
 
-try:
-    from homeassistant.components.tts import Voice
-except ImportError:  # pragma: no cover
-    Voice = None  # type: ignore[assignment]
+from homeassistant.components.tts import Voice
 
 
 async def async_setup_entry(
@@ -96,11 +92,12 @@ class AppleTTSEntity(TextToSpeechEntity):
     def supported_options(self) -> list[str]:
         return ["voice", "rate"]
 
-    async def async_get_supported_voices(self, language: str) -> list[Any]:
+    @callback
+    def async_get_supported_voices(self, language: str) -> list[Voice] | None:
         normalized = _normalize_language(language) or "he_IL"
         names = self._voices_by_language.get(normalized, [])
-        if Voice is None:
-            return names
+        if not names:
+            return None
         return [_make_voice(name) for name in names]
 
     def get_tts_audio(
@@ -232,12 +229,4 @@ def _normalize_language(language: str | None) -> str | None:
 
 
 def _make_voice(voice_name: str) -> Any:
-    if Voice is None:
-        return voice_name
-
-    params = inspect.signature(Voice).parameters
-    if "voice_id" in params and "name" in params:
-        return Voice(voice_id=voice_name, name=voice_name)
-    if len(params) >= 2:
-        return Voice(voice_name, voice_name)
-    return Voice(voice_name)
+    return Voice(voice_name, voice_name)
