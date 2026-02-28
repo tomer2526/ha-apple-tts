@@ -20,6 +20,24 @@ app = Flask(__name__)
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def _normalize_language(raw_language: str) -> str | None:
+    token = raw_language.strip().replace("-", "_")
+    if "_" not in token:
+        return None
+
+    parts = token.split("_")
+    if len(parts) != 2:
+        return None
+
+    language_code, region_code = parts
+    if not language_code.isalpha() or len(language_code) not in (2, 3):
+        return None
+    if not region_code.isalnum() or not (2 <= len(region_code) <= 8):
+        return None
+
+    return f"{language_code.lower()}_{region_code.upper()}"
+
+
 def _list_voices() -> list[dict[str, str]]:
     result = subprocess.run(
         ["say", "-v", "?"],
@@ -33,18 +51,14 @@ def _list_voices() -> list[dict[str, str]]:
         if not raw:
             continue
 
-        # Expected format from `say -v ?`: "<voice><spaces><lang><spaces># sample"
-        match = re.search(r"\s([a-z]{2}_[A-Z]{2})\s+#", raw)
-        if not match:
-            match = re.search(r"\s([a-z]{2}_[A-Z]{2})\s+", raw)
-        if not match:
+        # Keep only metadata segment: "<voice><spaces><lang>".
+        meta = raw.split("#", 1)[0].rstrip()
+        parts = re.split(r"\s{2,}", meta)
+        if len(parts) < 2:
             continue
 
-        language = match.group(1).replace("-", "_")
-        voice = raw[: match.start(1)].strip()
-
-        # Remove trailing whitespace fragments from voice field.
-        voice = re.sub(r"\s{2,}$", "", voice)
+        voice = parts[0].strip()
+        language = _normalize_language(parts[1])
         if voice and language:
             voices.append({"voice": voice, "language": language})
     return voices

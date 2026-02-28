@@ -13,12 +13,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from .const import DEFAULT_RATE, DEFAULT_VOICE, DOMAIN
 
 REQUEST_TIMEOUT = 15
-LANGUAGE_RE = re.compile(r"^[a-z]{2}_[A-Z]{2}$")
-
-try:
-    from homeassistant.components.tts import Voice
-except ImportError:  # pragma: no cover - backward compatibility
-    Voice = None  # type: ignore[assignment]
+LANGUAGE_RE = re.compile(r"^[a-z]{2,3}_[A-Z0-9]{2,8}$")
 
 
 async def async_setup_entry(
@@ -96,14 +91,9 @@ class AppleTTSEntity(TextToSpeechEntity):
         return ["voice", "rate"]
 
     @callback
-    def async_get_supported_voices(self, language: str) -> list[Any] | None:
-        normalized = (language or "he_IL").replace("-", "_")
-        names = self._voices_by_language.get(normalized)
-        if not names:
-            return None
-        if Voice is None:
-            return names
-        return [_make_voice(voice_name) for voice_name in names]
+    def async_get_supported_voices(self, language: str) -> list[str]:
+        normalized = _normalize_language(language) or "he_IL"
+        return self._voices_by_language.get(normalized, [])
 
     def get_tts_audio(
         self,
@@ -167,7 +157,9 @@ def _fetch_voices_by_language(host: str, port: int) -> dict[str, list[str]]:
         if not isinstance(voice_name, str) or not isinstance(language, str):
             continue
 
-        normalized_language = language.replace("-", "_")
+        normalized_language = _normalize_language(language)
+        if not normalized_language:
+            continue
         if not LANGUAGE_RE.fullmatch(normalized_language):
             continue
         voices_by_language.setdefault(normalized_language, set()).add(voice_name)
@@ -189,7 +181,7 @@ def _get_tts_audio(
     voice = options.get("voice")
     if not voice:
         voices_by_language = _fetch_voices_by_language(host, port)
-        normalized_language = (language or "he_IL").replace("-", "_")
+        normalized_language = _normalize_language(language) or "he_IL"
         language_voices = voices_by_language.get(normalized_language, [])
         voice = language_voices[0] if language_voices else DEFAULT_VOICE
     rate = options.get("rate", DEFAULT_RATE)
@@ -211,13 +203,21 @@ def _get_tts_audio(
     return "aiff", response.content
 
 
-def _make_voice(voice_name: str) -> Any:
-    """Return a Home Assistant Voice object for UI dropdown rendering."""
-    if Voice is None:
-        return voice_name
+def _normalize_language(language: str | None) -> str | None:
+    if not language:
+        return None
 
-    try:
-        return Voice(voice_name, voice_name)
-    except TypeError:
-        # Some HA builds use keyword-only Voice dataclass fields.
-        return Voice(voice_id=voice_name, name=voice_name)
+    token = language.strip().replace("-", "_")
+    if "_" not in token:
+        return None
+    parts = token.split("_")
+    if len(parts) != 2:
+        return None
+
+    language_code, region_code = parts
+    if not language_code.isalpha() or len(language_code) not in (2, 3):
+        return None
+    if not region_code.isalnum() or not (2 <= len(region_code) <= 8):
+        return None
+
+    return f"{language_code.lower()}_{region_code.upper()}"
