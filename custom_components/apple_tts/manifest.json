@@ -1,7 +1,7 @@
 {
   "domain": "apple_tts",
   "name": "Apple TTS",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "documentation": "https://github.com/tomershami/ha-apple-tts",
   "iot_class": "local_push",
   "requirements": [],

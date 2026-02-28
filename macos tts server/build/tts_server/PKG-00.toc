@@ -227,33 +227,33 @@
   ('libssl.3.dylib',
    '/opt/homebrew/opt/openssl@3/lib/libssl.3.dylib',
    'BINARY'),
-  ('setuptools/_vendor/importlib_metadata-8.7.1.dist-info/METADATA',
+  ('setuptools/_vendor/importlib_metadata-8.7.1.dist-info/WHEEL',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/METADATA',
-   'DATA'),
-  ('setuptools/_vendor/importlib_metadata-8.7.1.dist-info/top_level.txt',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/top_level.txt',
-   'DATA'),
-  ('setuptools/_vendor/importlib_metadata-8.7.1.dist-info/INSTALLER',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/INSTALLER',
-   'DATA'),
-  ('setuptools/_vendor/importlib_metadata-8.7.1.dist-info/RECORD',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/RECORD',
+   'server/.venv/lib/python3.14/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/WHEEL',
    'DATA'),
   ('setuptools/_vendor/importlib_metadata-8.7.1.dist-info/REQUESTED',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
    'server/.venv/lib/python3.14/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/REQUESTED',
    'DATA'),
+  ('setuptools/_vendor/importlib_metadata-8.7.1.dist-info/INSTALLER',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/INSTALLER',
+   'DATA'),
+  ('setuptools/_vendor/importlib_metadata-8.7.1.dist-info/top_level.txt',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/top_level.txt',
+   'DATA'),
+  ('setuptools/_vendor/importlib_metadata-8.7.1.dist-info/RECORD',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/RECORD',
+   'DATA'),
+  ('setuptools/_vendor/importlib_metadata-8.7.1.dist-info/METADATA',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/METADATA',
+   'DATA'),
   ('setuptools/_vendor/importlib_metadata-8.7.1.dist-info/licenses/LICENSE',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
    'server/.venv/lib/python3.14/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/licenses/LICENSE',
-   'DATA'),
-  ('setuptools/_vendor/importlib_metadata-8.7.1.dist-info/WHEEL',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/setuptools/_vendor/importlib_metadata-8.7.1.dist-info/WHEEL',
    'DATA'),
   ('setuptools/_vendor/jaraco/text/Lorem ipsum.txt',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
@@ -261,117 +261,117 @@
    'ipsum.txt',
    'DATA'),
   ('Python', 'Python.framework/Versions/3.14/Python', 'SYMLINK'),
-  ('markupsafe-3.0.3.dist-info/licenses/LICENSE.txt',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/markupsafe-3.0.3.dist-info/licenses/LICENSE.txt',
-   'DATA'),
-  ('itsdangerous-2.2.0.dist-info/INSTALLER',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/itsdangerous-2.2.0.dist-info/INSTALLER',
-   'DATA'),
   ('markupsafe-3.0.3.dist-info/INSTALLER',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
    'server/.venv/lib/python3.14/site-packages/markupsafe-3.0.3.dist-info/INSTALLER',
-   'DATA'),
-  ('itsdangerous-2.2.0.dist-info/LICENSE.txt',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/itsdangerous-2.2.0.dist-info/LICENSE.txt',
-   'DATA'),
-  ('werkzeug-3.1.6.dist-info/METADATA',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/werkzeug-3.1.6.dist-info/METADATA',
-   'DATA'),
-  ('flask-3.1.3.dist-info/RECORD',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/flask-3.1.3.dist-info/RECORD',
-   'DATA'),
-  ('werkzeug-3.1.6.dist-info/WHEEL',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/werkzeug-3.1.6.dist-info/WHEEL',
-   'DATA'),
-  ('markupsafe-3.0.3.dist-info/METADATA',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/markupsafe-3.0.3.dist-info/METADATA',
-   'DATA'),
-  ('click-8.3.1.dist-info/METADATA',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/click-8.3.1.dist-info/METADATA',
-   'DATA'),
-  ('werkzeug-3.1.6.dist-info/RECORD',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/werkzeug-3.1.6.dist-info/RECORD',
-   'DATA'),
-  ('itsdangerous-2.2.0.dist-info/RECORD',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/itsdangerous-2.2.0.dist-info/RECORD',
-   'DATA'),
-  ('itsdangerous-2.2.0.dist-info/METADATA',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/itsdangerous-2.2.0.dist-info/METADATA',
-   'DATA'),
-  ('werkzeug-3.1.6.dist-info/INSTALLER',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/werkzeug-3.1.6.dist-info/INSTALLER',
-   'DATA'),
-  ('flask-3.1.3.dist-info/entry_points.txt',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/flask-3.1.3.dist-info/entry_points.txt',
    'DATA'),
   ('flask-3.1.3.dist-info/licenses/LICENSE.txt',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
    'server/.venv/lib/python3.14/site-packages/flask-3.1.3.dist-info/licenses/LICENSE.txt',
    'DATA'),
-  ('markupsafe-3.0.3.dist-info/top_level.txt',
+  ('werkzeug-3.1.6.dist-info/INSTALLER',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/markupsafe-3.0.3.dist-info/top_level.txt',
+   'server/.venv/lib/python3.14/site-packages/werkzeug-3.1.6.dist-info/INSTALLER',
    'DATA'),
-  ('flask-3.1.3.dist-info/REQUESTED',
+  ('werkzeug-3.1.6.dist-info/METADATA',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/flask-3.1.3.dist-info/REQUESTED',
+   'server/.venv/lib/python3.14/site-packages/werkzeug-3.1.6.dist-info/METADATA',
    'DATA'),
-  ('click-8.3.1.dist-info/WHEEL',
+  ('werkzeug-3.1.6.dist-info/WHEEL',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/click-8.3.1.dist-info/WHEEL',
+   'server/.venv/lib/python3.14/site-packages/werkzeug-3.1.6.dist-info/WHEEL',
    'DATA'),
   ('itsdangerous-2.2.0.dist-info/WHEEL',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
    'server/.venv/lib/python3.14/site-packages/itsdangerous-2.2.0.dist-info/WHEEL',
    'DATA'),
-  ('flask-3.1.3.dist-info/INSTALLER',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/flask-3.1.3.dist-info/INSTALLER',
-   'DATA'),
-  ('flask-3.1.3.dist-info/WHEEL',
-   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/flask-3.1.3.dist-info/WHEEL',
-   'DATA'),
   ('click-8.3.1.dist-info/INSTALLER',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
    'server/.venv/lib/python3.14/site-packages/click-8.3.1.dist-info/INSTALLER',
    'DATA'),
-  ('markupsafe-3.0.3.dist-info/RECORD',
+  ('markupsafe-3.0.3.dist-info/METADATA',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/markupsafe-3.0.3.dist-info/RECORD',
+   'server/.venv/lib/python3.14/site-packages/markupsafe-3.0.3.dist-info/METADATA',
    'DATA'),
-  ('click-8.3.1.dist-info/RECORD',
+  ('werkzeug-3.1.6.dist-info/licenses/LICENSE.txt',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/click-8.3.1.dist-info/RECORD',
+   'server/.venv/lib/python3.14/site-packages/werkzeug-3.1.6.dist-info/licenses/LICENSE.txt',
+   'DATA'),
+  ('flask-3.1.3.dist-info/entry_points.txt',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/flask-3.1.3.dist-info/entry_points.txt',
+   'DATA'),
+  ('itsdangerous-2.2.0.dist-info/INSTALLER',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/itsdangerous-2.2.0.dist-info/INSTALLER',
+   'DATA'),
+  ('markupsafe-3.0.3.dist-info/top_level.txt',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/markupsafe-3.0.3.dist-info/top_level.txt',
+   'DATA'),
+  ('markupsafe-3.0.3.dist-info/licenses/LICENSE.txt',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/markupsafe-3.0.3.dist-info/licenses/LICENSE.txt',
    'DATA'),
   ('click-8.3.1.dist-info/licenses/LICENSE.txt',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
    'server/.venv/lib/python3.14/site-packages/click-8.3.1.dist-info/licenses/LICENSE.txt',
    'DATA'),
-  ('flask-3.1.3.dist-info/METADATA',
+  ('itsdangerous-2.2.0.dist-info/RECORD',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/flask-3.1.3.dist-info/METADATA',
+   'server/.venv/lib/python3.14/site-packages/itsdangerous-2.2.0.dist-info/RECORD',
+   'DATA'),
+  ('click-8.3.1.dist-info/METADATA',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/click-8.3.1.dist-info/METADATA',
    'DATA'),
   ('markupsafe-3.0.3.dist-info/WHEEL',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
    'server/.venv/lib/python3.14/site-packages/markupsafe-3.0.3.dist-info/WHEEL',
    'DATA'),
-  ('werkzeug-3.1.6.dist-info/licenses/LICENSE.txt',
+  ('itsdangerous-2.2.0.dist-info/LICENSE.txt',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
-   'server/.venv/lib/python3.14/site-packages/werkzeug-3.1.6.dist-info/licenses/LICENSE.txt',
+   'server/.venv/lib/python3.14/site-packages/itsdangerous-2.2.0.dist-info/LICENSE.txt',
+   'DATA'),
+  ('markupsafe-3.0.3.dist-info/RECORD',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/markupsafe-3.0.3.dist-info/RECORD',
+   'DATA'),
+  ('flask-3.1.3.dist-info/METADATA',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/flask-3.1.3.dist-info/METADATA',
+   'DATA'),
+  ('click-8.3.1.dist-info/RECORD',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/click-8.3.1.dist-info/RECORD',
+   'DATA'),
+  ('flask-3.1.3.dist-info/RECORD',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/flask-3.1.3.dist-info/RECORD',
+   'DATA'),
+  ('click-8.3.1.dist-info/WHEEL',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/click-8.3.1.dist-info/WHEEL',
+   'DATA'),
+  ('itsdangerous-2.2.0.dist-info/METADATA',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/itsdangerous-2.2.0.dist-info/METADATA',
+   'DATA'),
+  ('flask-3.1.3.dist-info/WHEEL',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/flask-3.1.3.dist-info/WHEEL',
+   'DATA'),
+  ('flask-3.1.3.dist-info/INSTALLER',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/flask-3.1.3.dist-info/INSTALLER',
+   'DATA'),
+  ('werkzeug-3.1.6.dist-info/RECORD',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/werkzeug-3.1.6.dist-info/RECORD',
+   'DATA'),
+  ('flask-3.1.3.dist-info/REQUESTED',
+   '/Users/tomershami/Downloads/ha-apple-tts/macos tts '
+   'server/.venv/lib/python3.14/site-packages/flask-3.1.3.dist-info/REQUESTED',
    'DATA'),
   ('base_library.zip',
    '/Users/tomershami/Downloads/ha-apple-tts/macos tts '

@@ -80,6 +80,18 @@ action:
 
 You can reuse this in Scripts, Automations, and Developer Tools.
 
+## 4) UI entities for defaults
+
+The integration also creates helper entities you can control from the UI:
+
+- `select.apple_tts_language`
+- `select.apple_tts_voice`
+- `number.apple_tts_rate`
+- `number.apple_tts_pitch`
+- `number.apple_tts_volume`
+
+When `tts.speak` is called without explicit `options`, these values are used as defaults.
+
 ## Notes
 
 - Hebrew voice is usually `Carmit` (not `Carmel`).
