@@ -1,9 +1,10 @@
 {
   "domain": "apple_tts",
   "name": "Apple TTS",
-  "version": "1.0.0",
+  "version": "1.0",
+  "documentation": "",
+  "requirements": [],
+  "dependencies": [],
   "config_flow": true,
-  "documentation": "https://github.com/YOUR_USERNAME/ha-apple-tts",
-  "codeowners": ["@YOUR_USERNAME"],
-  "requirements": []
+  "codeowners": []
 }
