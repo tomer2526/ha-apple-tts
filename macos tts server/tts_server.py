@@ -29,11 +29,22 @@ def _list_voices() -> list[dict[str, str]]:
     )
     voices: list[dict[str, str]] = []
     for line in result.stdout.splitlines():
-        parts = re.split(r"\s{2,}", line.strip(), maxsplit=2)
-        if len(parts) < 2:
+        raw = line.strip()
+        if not raw:
             continue
-        voice = parts[0].strip()
-        language = parts[1].strip().replace("-", "_")
+
+        # Expected format from `say -v ?`: "<voice><spaces><lang><spaces># sample"
+        match = re.search(r"\s([a-z]{2}_[A-Z]{2})\s+#", raw)
+        if not match:
+            match = re.search(r"\s([a-z]{2}_[A-Z]{2})\s+", raw)
+        if not match:
+            continue
+
+        language = match.group(1).replace("-", "_")
+        voice = raw[: match.start(1)].strip()
+
+        # Remove trailing whitespace fragments from voice field.
+        voice = re.sub(r"\s{2,}$", "", voice)
         if voice and language:
             voices.append({"voice": voice, "language": language})
     return voices

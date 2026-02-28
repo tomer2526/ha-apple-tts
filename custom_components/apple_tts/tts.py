@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Any
 from urllib.parse import urlencode
 
@@ -12,6 +13,12 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from .const import DEFAULT_RATE, DEFAULT_VOICE, DOMAIN
 
 REQUEST_TIMEOUT = 15
+LANGUAGE_RE = re.compile(r"^[a-z]{2}_[A-Z]{2}$")
+
+try:
+    from homeassistant.components.tts import Voice
+except ImportError:  # pragma: no cover - backward compatibility
+    Voice = None  # type: ignore[assignment]
 
 
 async def async_setup_entry(
@@ -89,9 +96,14 @@ class AppleTTSEntity(TextToSpeechEntity):
         return ["voice", "rate"]
 
     @callback
-    def async_get_supported_voices(self, language: str) -> list[str] | None:
+    def async_get_supported_voices(self, language: str) -> list[Any] | None:
         normalized = (language or "he_IL").replace("-", "_")
-        return self._voices_by_language.get(normalized)
+        names = self._voices_by_language.get(normalized)
+        if not names:
+            return None
+        if Voice is None:
+            return names
+        return [_make_voice(voice_name) for voice_name in names]
 
     def get_tts_audio(
         self,
@@ -156,6 +168,8 @@ def _fetch_voices_by_language(host: str, port: int) -> dict[str, list[str]]:
             continue
 
         normalized_language = language.replace("-", "_")
+        if not LANGUAGE_RE.fullmatch(normalized_language):
+            continue
         voices_by_language.setdefault(normalized_language, set()).add(voice_name)
 
     return {
@@ -195,3 +209,15 @@ def _get_tts_audio(
         return None
 
     return "aiff", response.content
+
+
+def _make_voice(voice_name: str) -> Any:
+    """Return a Home Assistant Voice object for UI dropdown rendering."""
+    if Voice is None:
+        return voice_name
+
+    try:
+        return Voice(voice_name, voice_name)
+    except TypeError:
+        # Some HA builds use keyword-only Voice dataclass fields.
+        return Voice(voice_id=voice_name, name=voice_name)
