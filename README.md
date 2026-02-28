@@ -146,6 +146,9 @@ data:
 
 ## Notes
 
+- This integration uses macOS `say` (Speech Synthesis), not Siri assistant voices.
+- Why: Siri voices are not exposed as a stable local CLI API, while `say` is a supported system interface that works reliably for automation/server use.
+- Result: voice quality and voice list come from `say -v ?`, not from Siri's assistant voice stack.
 - Integration defaults are `language: en_US` and `voice: Samantha`.
 - Hebrew voice is usually `Carmit` (not `Carmel`).
 - On shell, use `say -v "?"` if `?` is expanded.
