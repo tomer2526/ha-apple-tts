@@ -15,6 +15,30 @@ Custom Home Assistant TTS provider that uses a small macOS Flask server wrapping
 - `custom_components/apple_tts/` - Home Assistant custom integration
 - `macos tts server/` - Flask server that generates AIFF from `say`
 
+## Quick install from GitHub
+
+Repository:
+
+- `https://github.com/tomer2526/ha-apple-tts/tree/main`
+
+Home Assistant (installs `custom_components/apple_tts` into `/config`):
+
+```bash
+cd /tmp
+curl -fsSL -o install_ha_from_git.sh https://raw.githubusercontent.com/tomer2526/ha-apple-tts/main/install_ha_from_git.sh
+chmod +x install_ha_from_git.sh
+./install_ha_from_git.sh /config
+```
+
+macOS server (clones/updates to `~/ha-apple-tts` and enables autostart):
+
+```bash
+cd /tmp
+curl -fsSL -o install_macos_server_from_git.sh https://raw.githubusercontent.com/tomer2526/ha-apple-tts/main/install_macos_server_from_git.sh
+chmod +x install_macos_server_from_git.sh
+./install_macos_server_from_git.sh
+```
+
 ## 1) Run the macOS TTS server
 
 From this repository on your Mac:
