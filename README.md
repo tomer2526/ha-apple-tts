@@ -1,4 +1,4 @@
-# Apple TTS for Home Assistant (macOS `say`)
+# Apple TTS for Home Assistant (Speech synthesis)
 
 Custom Home Assistant TTS provider that uses a small macOS Flask server wrapping Apple `say` voices.
 
@@ -97,8 +97,8 @@ action:
     target:
       entity_id: tts.apple_tts
     data:
-      media_player_entity_id: media_player.homepod_tvmr
-      message: "Hello Tomer"
+      media_player_entity_id: media_player.homepod
+      message: "Hello World"
       cache: true
       options:
         voice: Samantha
