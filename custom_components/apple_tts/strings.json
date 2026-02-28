@@ -10,5 +10,17 @@
         }
       }
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Apple TTS Options",
+        "description": "Update the Mac server IP and port",
+        "data": {
+          "host": "Mac IP",
+          "port": "Port"
+        }
+      }
+    }
   }
 }

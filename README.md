@@ -101,6 +101,7 @@ Restart Home Assistant, then add integration:
 - `Settings -> Devices & Services -> Add Integration`
 - Choose `Apple TTS`
 - Enter Mac host and port (default `5002`)
+- To update IP/port later: open the integration and click `Configure`
 
 ## 3) Use `tts.speak`
 

@@ -81,8 +81,8 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})
-    host = entry.data[CONF_HOST]
-    port = entry.data[CONF_PORT]
+    host = entry.options.get(CONF_HOST, entry.data[CONF_HOST])
+    port = entry.options.get(CONF_PORT, entry.data[CONF_PORT])
     voices_by_language = await hass.async_add_executor_job(
         fetch_voices_by_language,
         host,
