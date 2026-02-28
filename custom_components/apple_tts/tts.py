@@ -1,13 +1,13 @@
 import requests
 from homeassistant.components.tts import Provider
-from .const import DOMAIN, DEFAULT_RATE, DEFAULT_VOICE
+from .const import DOMAIN, DEFAULT_VOICE, DEFAULT_RATE
 
 async def async_get_engine(hass, config, discovery_info=None):
     data = hass.data[DOMAIN]
     return AppleTTSEngine(data)
 
 class AppleTTSEngine(Provider):
-    """TTS Engine for Apple say on macOS."""
+    """TTS Engine using macOS say server."""
 
     def __init__(self, config):
         self.host = config["host"]
@@ -27,7 +27,6 @@ class AppleTTSEngine(Provider):
             return ["he_IL"]
 
     def get_tts_audio(self, message, language, options=None):
-        """Return audio bytes from Apple TTS server."""
         voice = options.get("voice", DEFAULT_VOICE)
         rate = options.get("rate", DEFAULT_RATE)
         url = f"http://{self.host}:{self.port}/tts?text={message}&voice={voice}&rate={rate}"
