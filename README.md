@@ -138,6 +138,7 @@ The integration also creates helper entities you can control from the UI:
 - `number.apple_tts_rate`
 - `number.apple_tts_pitch`
 - `number.apple_tts_volume`
+- `button.apple_tts_shutdown_server`
 
 When `tts.speak` is called without explicit `options`, these values are used as defaults.
 
@@ -157,6 +158,8 @@ service: apple_tts.shutdown_server
 data:
   # entry_id: "<optional-config-entry-id>"
 ```
+
+You can also press the `button.apple_tts_shutdown_server` entity from the UI.
 
 ## Notes
 

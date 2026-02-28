@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import requests
 import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -8,6 +7,7 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 
 from .api import fetch_voices_by_language
+from .control import async_shutdown_server
 from .const import (
     CONF_HOST,
     CONF_PORT,
@@ -28,7 +28,7 @@ from .const import (
     SERVICE_SHUTDOWN,
 )
 
-PLATFORMS = ["tts", "number"]
+PLATFORMS = ["tts", "number", "button"]
 
 RESET_SCHEMA = vol.Schema(
     {
@@ -72,6 +72,19 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
                 changed = True
             if changed:
                 async_dispatcher_send(hass, _update_signal(item["entry_id"]))
+
+    async def _handle_shutdown(call) -> None:
+        domain_data = hass.data.get(DOMAIN, {})
+        if not isinstance(domain_data, dict) or not domain_data:
+            raise HomeAssistantError("Apple TTS is not configured")
+
+        entry_id = call.data.get("entry_id")
+        if entry_id and entry_id in domain_data:
+            target = domain_data[entry_id]
+        else:
+            target = next(iter(domain_data.values()))
+
+        await async_shutdown_server(hass, target)
 
     if not hass.services.has_service(DOMAIN, SERVICE_RESET):
         hass.services.async_register(
@@ -135,27 +148,3 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         if not hass.data[DOMAIN] and hass.services.has_service(DOMAIN, SERVICE_SHUTDOWN):
             hass.services.async_remove(DOMAIN, SERVICE_SHUTDOWN)
     return unload_ok
-    async def _handle_shutdown(call) -> None:
-        domain_data = hass.data.get(DOMAIN, {})
-        if not isinstance(domain_data, dict) or not domain_data:
-            raise HomeAssistantError("Apple TTS is not configured")
-
-        entry_id = call.data.get("entry_id")
-        target = domain_data.get(entry_id) if entry_id else next(iter(domain_data.values()))
-        if not isinstance(target, dict):
-            raise HomeAssistantError("Apple TTS entry not found")
-
-        host = target[CONF_HOST]
-        port = target[CONF_PORT]
-
-        def _send_shutdown() -> None:
-            response = requests.post(
-                f"http://{host}:{port}/shutdown",
-                timeout=5,
-            )
-            response.raise_for_status()
-
-        try:
-            await hass.async_add_executor_job(_send_shutdown)
-        except requests.RequestException as err:
-            raise HomeAssistantError(f"Failed to shut down Apple TTS server: {err}") from err
