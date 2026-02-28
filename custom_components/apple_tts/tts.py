@@ -75,6 +75,15 @@ class AppleTTSEntity(TextToSpeechEntity):
     def supported_options(self) -> list[str]:
         return [OPTION_VOICE, OPTION_RATE, OPTION_PITCH, OPTION_VOLUME]
 
+    @property
+    def default_options(self) -> dict[str, Any]:
+        return {
+            OPTION_VOICE: self._preferences.get(OPTION_VOICE, DEFAULT_VOICE),
+            OPTION_RATE: self._preferences.get(OPTION_RATE, DEFAULT_RATE),
+            OPTION_PITCH: self._preferences.get(OPTION_PITCH, DEFAULT_PITCH),
+            OPTION_VOLUME: self._preferences.get(OPTION_VOLUME),
+        }
+
     @callback
     def async_get_supported_voices(self, language: str) -> list[Voice] | None:
         normalized = normalize_language(language) or self.default_language
@@ -125,6 +134,16 @@ class AppleTTSEngine(Provider):
     @property
     def supported_options(self) -> list[str]:
         return [OPTION_VOICE, OPTION_RATE, OPTION_PITCH, OPTION_VOLUME]
+
+    @property
+    def default_options(self) -> dict[str, Any]:
+        prefs = self._config.get(DATA_PREFERENCES, {})
+        return {
+            OPTION_VOICE: prefs.get(OPTION_VOICE, DEFAULT_VOICE),
+            OPTION_RATE: prefs.get(OPTION_RATE, DEFAULT_RATE),
+            OPTION_PITCH: prefs.get(OPTION_PITCH, DEFAULT_PITCH),
+            OPTION_VOLUME: prefs.get(OPTION_VOLUME),
+        }
 
     def get_tts_audio(
         self, message: str, language: str, options: dict[str, Any] | None = None
