@@ -22,7 +22,7 @@ from .const import (
     OPTION_VOICE,
 )
 
-PLATFORMS = ["tts", "select", "number"]
+PLATFORMS = ["tts", "number"]
 
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:

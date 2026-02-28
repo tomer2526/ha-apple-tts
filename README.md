@@ -84,8 +84,6 @@ You can reuse this in Scripts, Automations, and Developer Tools.
 
 The integration also creates helper entities you can control from the UI:
 
-- `select.apple_tts_language`
-- `select.apple_tts_voice`
 - `number.apple_tts_rate`
 - `number.apple_tts_pitch`
 - `number.apple_tts_volume`
