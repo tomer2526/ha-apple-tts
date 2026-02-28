@@ -32,3 +32,6 @@ class AppleTTSEngine(Provider):
         url = f"http://{self.host}:{self.port}/tts?text={message}&voice={voice}&rate={rate}"
         r = requests.get(url)
         return "aiff", r.content
+async def async_setup_entry(hass, config_entry, async_add_entities):
+    """Set up Apple TTS from a config entry."""
+    return True
