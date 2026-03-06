@@ -200,4 +200,6 @@ def _get_tts_audio(
     except requests.RequestException:
         return None
 
-    return "aiff", response.content
+    content_type = response.headers.get("Content-Type", "").lower()
+    audio_format = "wav" if "audio/wav" in content_type else "aiff"
+    return audio_format, response.content
