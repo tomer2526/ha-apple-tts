@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 import requests
@@ -26,6 +27,8 @@ from .const import (
     OPTION_VOLUME,
     OPTION_VOICE,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
@@ -168,10 +171,18 @@ def _get_tts_audio(
     selected_language = normalize_language(language) or preferences.get(
         OPTION_LANGUAGE, DEFAULT_LANGUAGE
     )
-    voice = options.get(OPTION_VOICE) or preferences.get(OPTION_VOICE)
+    voice = _resolve_voice(
+        requested_voice=options.get(OPTION_VOICE),
+        preferred_voice=preferences.get(OPTION_VOICE),
+        voices_by_language=voices_by_language,
+        language=selected_language,
+    )
     if not voice:
-        language_voices = voices_by_language.get(selected_language, [])
-        voice = language_voices[0] if language_voices else DEFAULT_VOICE
+        _LOGGER.warning(
+            "No Apple TTS voice available for language '%s'; refusing to fall back silently",
+            selected_language,
+        )
+        return None
 
     rate = options.get(OPTION_RATE, preferences.get(OPTION_RATE, DEFAULT_RATE))
     pitch = options.get(OPTION_PITCH, preferences.get(OPTION_PITCH, DEFAULT_PITCH))
@@ -201,3 +212,45 @@ def _get_tts_audio(
     content_type = response.headers.get("Content-Type", "").lower()
     audio_format = "wav" if "audio/wav" in content_type else "aiff"
     return audio_format, response.content
+
+
+def _resolve_voice(
+    *,
+    requested_voice: Any,
+    preferred_voice: Any,
+    voices_by_language: dict[str, list[str]],
+    language: str,
+) -> str | None:
+    explicit_voice = _extract_voice_name(requested_voice)
+    if explicit_voice:
+        return explicit_voice
+
+    language_voices = voices_by_language.get(language, [])
+    preferred_voice_name = _extract_voice_name(preferred_voice)
+    if preferred_voice_name and preferred_voice_name in language_voices:
+        return preferred_voice_name
+
+    if language_voices:
+        return language_voices[0]
+
+    return None
+
+
+def _extract_voice_name(value: Any) -> str | None:
+    if isinstance(value, str):
+        candidate = value.strip()
+        return candidate or None
+
+    if isinstance(value, dict):
+        for key in ("voice_id", "voice", "id", "name"):
+            candidate = value.get(key)
+            if isinstance(candidate, str) and candidate.strip():
+                return candidate.strip()
+        return None
+
+    for attr in ("voice_id", "voice", "id", "name"):
+        candidate = getattr(value, attr, None)
+        if isinstance(candidate, str) and candidate.strip():
+            return candidate.strip()
+
+    return None
