@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import Any
-from urllib.parse import urlencode
 
 import requests
 from homeassistant.components.tts import Provider, TextToSpeechEntity, Voice
@@ -189,11 +188,10 @@ def _get_tts_audio(
     if volume is not None:
         query_params["volume"] = volume
 
-    params = urlencode(query_params, doseq=False, safe="")
-
     try:
         response = requests.get(
-            f"http://{host}:{port}/tts?{params}",
+            f"http://{host}:{port}/tts",
+            params=query_params,
             timeout=HTTP_TIMEOUT,
         )
         response.raise_for_status()
